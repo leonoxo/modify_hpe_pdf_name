@@ -19,23 +19,36 @@
 
 ## 如何使用
 
-您必須先在系統上安裝 [Docker](https://www.docker.com/get-started) 才能使用此工具。
+此工具提供兩種執行方式：透過 Docker（推薦）或直接在本機執行。
 
-### 1. 拉取 Docker 映像
+### 方法一：透過 Docker 執行（推薦）
 
-開啟您的終端機，並使用以下指令從 Docker Hub 拉取最新的映像：
+這是最簡單且推薦的方式，因為它無需在您的電腦上安裝 Python 或任何套件。
 
-```bash
-docker pull leonoxo/hpe_pdf-processor:latest
-```
+1.  **安裝 Docker**：請確保您的系統已安裝 [Docker](https://www.docker.com/get-started)。
+2.  **拉取映像**：開啟終端機，拉取最新的 Docker 映像。
+    ```bash
+    docker pull leonoxo/hpe_pdf-processor:latest
+    ```
+3.  **執行容器**：切換到包含您想處理的 PDF 檔案的目錄，然後執行以下指令。
+    ```bash
+    docker run --rm -v "$(pwd)":/data leonoxo/hpe_pdf-processor:latest
+    ```
 
-### 2. 執行容器
+### 方法二：直接在本機執行
 
-請切換到包含您想處理的 PDF 檔案的目錄，然後執行以下指令：
+如果您不想使用 Docker，也可以直接在本機執行 Python 腳本。
 
-```bash
-docker run --rm -v "$(pwd)":/data leonoxo/hpe_pdf-processor:latest
-```
+1.  **安裝 Python**：請確保您的電腦已安裝 Python 3.9 或更高版本。
+2.  **下載專案**：從 GitHub 下載或 clone 此專案。
+3.  **安裝相依套件**：在專案目錄中開啟終端機，並執行以下指令來安裝必要的套件。
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  **執行腳本**：將您想處理的 PDF 檔案放到專案目錄中，然後執行以下指令。
+    ```bash
+    python pdf_processor.py
+    ```
 
 **指令說明：**
 

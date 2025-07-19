@@ -5,8 +5,13 @@ from pypdf import PdfReader
 from datetime import datetime
 
 # --- General Configuration ---
-TARGET_DIR = "/data"  # Directory inside the container where PDFs will be mounted
-LOG_DIR = "/data"     # Directory where log files will be saved
+# Use /data if it exists and is a directory (for Docker), otherwise use the current directory (for local execution).
+if os.path.isdir("/data"):
+    TARGET_DIR = "/data"  # Running in Docker
+    LOG_DIR = "/data"
+else:
+    TARGET_DIR = "."      # Running locally
+    LOG_DIR = "."
 
 # --- Prefix Remover Configuration ---
 PREFIX_PATTERN = re.compile(r"^(HPE_.*_us_|HPE_.*?_)", re.IGNORECASE)
