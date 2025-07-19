@@ -1,71 +1,66 @@
-# HPE PDF Renaming Tool
+# HPE PDF 重命名工具
 
 [![Python Version](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A simple yet powerful Dockerized Python tool to automatically clean up and rename PDF documents from Hewlett Packard Enterprise (HPE).
-
----
-
-## Features
-
--   **Prefix Removal**: Automatically removes common filename prefixes like `HPE_*_us_` or `HPE_*_`.
--   **Date-based Suffixing**: Intelligently extracts the publication date from the PDF's text or metadata and appends it to the filename in a clean `_YYYYMM` format.
--   **Fallback Mechanism**: If no date can be found, it appends a default suffix (`_000000`) to ensure all files are processed.
--   **Detailed Logging**: Generates two log files (`remove_prefix_log.txt` and `rename_log.txt`) to provide a transparent and detailed record of all operations.
--   **Dockerized**: Packaged in a lightweight Docker container for easy, cross-platform execution without dependency hassles.
+一個簡單而強大的 Docker 化 Python 工具，可自動清理和重命名來自 Hewlett Packard Enterprise (HPE) 的 PDF 文件。
 
 ---
 
-## How to Use
+## 功能特性
 
-You must have [Docker](https://www.docker.com/get-started) installed on your system to use this tool.
+-   **移除前綴**：自動移除檔名中常見的 `HPE_*_us_` 或 `HPE_*_` 前綴。
+-   **日期後綴**：從 PDF 的內容或元數據中智能提取發布日期，並將其以 `_YYYYMM` 的格式附加到檔名末尾。
+-   **備用機制**：如果找不到日期，腳本會附加一個預設後綴 (`_000000`)，以確保所有檔案都得到處理。
+-   **詳細日誌**：產生兩個日誌檔案 (`remove_prefix_log.txt` 和 `rename_log.txt`)，提供所有操作的透明且詳細的記錄。
+-   **Docker化**：封裝在一個輕量級的 Docker 容器中，方便在不同平台執行，無需處理繁瑣的相依性問題。
 
-### 1. Pull the Docker Image
+---
 
-Open your terminal and pull the latest image from Docker Hub:
+## 如何使用
+
+您必須先在系統上安裝 [Docker](https://www.docker.com/get-started) 才能使用此工具。
+
+### 1. 拉取 Docker 映像
+
+開啟您的終端機，並使用以下指令從 Docker Hub 拉取最新的映像：
 
 ```bash
 docker pull leonoxo/hpe_pdf-processor:latest
 ```
 
-### 2. Run the Container
+### 2. 執行容器
 
-Navigate to the directory containing the PDF files you want to process and run the following command:
+請切換到包含您想處理的 PDF 檔案的目錄，然後執行以下指令：
 
 ```bash
 docker run --rm -v "$(pwd)":/data leonoxo/hpe_pdf-processor:latest
 ```
 
-**Command Breakdown:**
+**指令說明：**
 
--   `docker run`: The standard command to run a Docker container.
--   `--rm`: This flag automatically removes the container once it finishes its task, keeping your system clean.
--   `-v "$(pwd)":/data`: This is the most crucial part. It mounts your **current working directory** (where your PDFs are) into the `/data` directory inside the container. The script is hardcoded to process all PDF files within this `/data` directory.
--   `leonoxo/hpe_pdf-processor:latest`: The name of the image you want to run.
-
----
-
-## How It Works
-
-The container executes the `pdf_processor.py` script, which performs the following steps in sequence:
-
-1.  **Prefix Removal**: It scans all PDF files in the `/data` directory and uses regex to find and strip known HPE prefixes from the filenames.
-2.  **Date Extraction & Renaming**:
-    - For each PDF, it scans the text of the first and last few pages for various date patterns (e.g., "Published: Month Year", "First edition: Month Year", "Month YYYY").
-    - If no date is found in the text, it attempts to read the PDF's metadata (`/ModDate` or `/CreationDate`).
-    - The extracted date is formatted as `YYYYMM` and appended as a suffix to the filename.
-    - If no date can be found through any method, a default suffix is used.
-
-All actions, successes, and errors are logged to `remove_prefix_log.txt` and `rename_log.txt` in your directory.
+-   `docker run`: 執行 Docker 容器的標準指令。
+-   `--rm`: 此旗標會在容器完成任務後自動將其刪除，以保持系統整潔。
+-   `-v "$(pwd)":/data`: 這是最關鍵的部分。它會將您**當前的工作目錄**（也就是您存放 PDF 的地方）掛載到容器內的 `/data` 目錄。腳本被設定為處理此 `/data` 目錄中的所有 PDF 檔案。
+-   `leonoxo/hpe_pdf-processor:latest`: 指定您想要執行的映像名稱。
 
 ---
 
-## Contributing
+## 運作原理
 
-Feel free to open an issue or submit a pull request if you have suggestions for improvements.
+容器會執行 `pdf_processor.py` 腳本，該腳本依序執行以下步驟：
 
-## License
+1.  **移除前綴**：掃描 `/data` 目錄中的所有 PDF 檔案，並使用正規表示式尋找並移除已知的 HPE 檔名前綴。
+2.  **提取日期並重命名**：
+    -   對於每個 PDF，腳本會掃描文件前幾頁和後幾頁的內文，以尋找各種日期格式（例如 "Published: Month Year"、"First edition: Month Year"、"Month YYYY"）。
+    -   如果在內文中找不到日期，它會嘗試讀取 PDF 的元數據（`/ModDate` 或 `/CreationDate`）。
+    -   提取出的日期會被格式化為 `YYYYMM`，並作為後綴附加到檔名上。
+    -   如果透過任何方法都找不到日期，則會使用預設後綴。
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+所有操作、成功和錯誤的資訊都會被記錄到您目錄中的 `remove_prefix_log.txt` 和 `rename_log.txt` 檔案中。
+
+---
+
+## 貢獻
+
+如果您有任何改進建議，歡迎提出 Issue 或提交 Pull Request。
