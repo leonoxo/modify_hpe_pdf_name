@@ -1,2 +1,5 @@
-# Ignore log files
+# Ignore all .txt files
 *.txt
+
+# But do NOT ignore requirements.txt
+!requirements.txt
